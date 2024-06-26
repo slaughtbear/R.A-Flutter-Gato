@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gto/config/config.dart';
-import 'package:gto/widget/celda.dart';
+
+import '../widget/celda.dart';
 
 class Controles extends StatefulWidget {
-  const Controles({super.key});
+  final Function(int, int, int) onGameEnd;
+
+  const Controles({Key? key, required this.onGameEnd}) : super(key: key);
 
   @override
   State<Controles> createState() => ControlesState();
@@ -13,6 +15,11 @@ class Controles extends StatefulWidget {
 class ControlesState extends State<Controles> {
   estados inicial = estados.cruz;
   int contador = 0;
+  int victoriasCruz = 0;
+  int victoriasCirculo = 0;
+  int empates = 0;
+
+  List<estados> tablero = List.filled(9, estados.vacio);
 
   @override
   Widget build(BuildContext context) {
@@ -99,14 +106,6 @@ class ControlesState extends State<Controles> {
               ],
             ),
           ),
-          const Text(
-            'Ejemplo de texto con fuente personalizada',
-            style: TextStyle(
-              fontFamily: 'Kanit',
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ],
       ),
     );
@@ -117,66 +116,94 @@ class ControlesState extends State<Controles> {
     if (tablero[index] == estados.vacio) {
       setState(() {
         tablero[index] = inicial;
-        inicial = inicial == estados.cruz ? estados.circulo : estados.cruz;
         contador++;
       });
 
       bool hayGanador = false;
-      for (int i = 0; i < tablero.length; i += 3) {
-        if (Iguales(i, i + 1, i + 2)) {
-          hayGanador = true;
-          break;
+      if (contador >= 5) {
+        for (int i = 0; i < tablero.length; i += 3) {
+          if (Iguales(i, i + 1, i + 2)) {
+            hayGanador = true;
+            break;
+          }
         }
-      }
-      for (int i = 0; i < 3; i++) {
-        if (Iguales(i, i + 3, i + 6)) {
-          hayGanador = true;
-          break;
+        for (int i = 0; i < 3; i++) {
+          if (Iguales(i, i + 3, i + 6)) {
+            hayGanador = true;
+            break;
+          }
         }
-      }
-      if (Iguales(0, 4, 8) || Iguales(2, 4, 6)) {
-        hayGanador = true;
+        if (Iguales(0, 4, 8) || Iguales(2, 4, 6)) {
+          hayGanador = true;
+        }
       }
 
       if (hayGanador) {
-        mostrarMensaje(context, "¡Ganador!", "¡${inicial == estados.cruz ? 'O' : 'X'} ha ganado!");
+        if (tablero[index] == estados.cruz) {
+          victoriasCruz++;
+        } else {
+          victoriasCirculo++;
+        }
+        // Mostrar mensaje de victoria y reiniciar el juego después de un tiempo
+        _mostrarMensajeVictoria(context, "¡Ganó ${tablero[index] == estados.cruz ? 'X' : 'O'}!");
       } else if (contador == 9) {
-        mostrarMensaje(context, "Empate", "¡El juego ha terminado en empate!");
+        // Empate
+        empates++;
+        // Mostrar mensaje de empate y reiniciar el juego después de un tiempo
+        _mostrarMensajeEmpate(context, "¡Empate!");
+      } else {
+        setState(() {
+          inicial = inicial == estados.cruz ? estados.circulo : estados.cruz;
+        });
       }
     }
   }
 
   bool Iguales(int a, int b, int c) {
-    if (tablero[a] != estados.vacio) {
-      if (tablero[a] == tablero[b] && tablero[b] == tablero[c]) {
-        resultados[tablero[a]] = true;
-        return true;
-      }
+    if (tablero[a]!= estados.vacio &&
+        tablero[a] == tablero[b] &&
+        tablero[a] == tablero[c]) {
+      return true;
     }
     return false;
   }
 
-  void mostrarMensaje(BuildContext context, String titulo, String mensaje) {
+  void _mostrarMensajeVictoria(BuildContext context, String mensaje) {
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(titulo),
+          title: Text("¡Partida terminada!"),
           content: Text(mensaje),
-          actions: <Widget>[
+          actions: [
             TextButton(
-              child: const Text("Continuar"),
+              child: Text("Aceptar"),
               onPressed: () {
+                widget.onGameEnd(victoriasCruz, victoriasCirculo, empates);
                 reiniciarJuego();
                 Navigator.of(context).pop();
               },
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _mostrarMensajeEmpate(BuildContext context, String mensaje) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("¡Partida terminada!"),
+          content: Text(mensaje),
+          actions: [
             TextButton(
-              child: const Text("Salir"),
+              child: Text("Aceptar"),
               onPressed: () {
+                widget.onGameEnd(victoriasCruz, victoriasCirculo, empates);
+                reiniciarJuego();
                 Navigator.of(context).pop();
-                salirDeLaAplicacion();
               },
             ),
           ],
@@ -187,14 +214,11 @@ class ControlesState extends State<Controles> {
 
   void reiniciarJuego() {
     setState(() {
-      tablero = List.filled(9, estados.vacio);
-      resultados = {estados.cruz: false, estados.circulo: false};
+      for (int i = 0; i < tablero.length; i++) {
+        tablero[i] = estados.vacio;
+      }
       inicial = estados.cruz;
       contador = 0;
     });
   }
-}
-
-void salirDeLaAplicacion() {
-  SystemNavigator.pop();
 }

@@ -3,7 +3,7 @@ import 'package:gto/config/config.dart';
 import 'controles.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -12,11 +12,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final GlobalKey<ControlesState> _controlesKey = GlobalKey<ControlesState>();
 
+  int victoriasX = 0;
+  int victoriasO = 0;
+  int empates = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "E l   G a t o",
           style: TextStyle(
             color: Colors.purple, // Cambia el color del texto del título
@@ -64,7 +68,7 @@ class _HomeState extends State<Home> {
             child: Stack(
               children: [
                 Image.asset("imagenes/board.png"),
-                Controles(key: _controlesKey),
+                Controles(key: _controlesKey, onGameEnd: _actualizarContadoresJuego),
               ],
             ),
           ),
@@ -75,15 +79,15 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  'Victorias X: 0',
+                  'Victorias X: $victoriasX',
                   style: TextStyle(fontSize: 18.0, color: Colors.blue),
                 ),
                 Text(
-                  'Victorias O: 0',
+                  'Victorias O: $victoriasO',
                   style: TextStyle(fontSize: 18.0, color: Colors.pink),
                 ),
                 Text(
-                  'Empates: 0',
+                  'Empates: $empates',
                   style: TextStyle(fontSize: 18.0, color: Colors.blueGrey),
                 ),
               ],
@@ -146,5 +150,13 @@ class _HomeState extends State<Home> {
         );
       },
     );
+  }
+
+  void _actualizarContadoresJuego(int victoriasCruz, int victoriasCirculo, int empates) {
+    setState(() {
+      victoriasX = victoriasCruz;
+      victoriasO = victoriasCirculo;
+      this.empates = empates;
+    });
   }
 }
