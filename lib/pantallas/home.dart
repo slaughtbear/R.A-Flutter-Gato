@@ -91,6 +91,33 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.black, // Color de fondo del BottomAppBar
+        child: Container(
+          height: 60.0, // Altura del BottomAppBar
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(Icons.refresh, color: Colors.purple), // Icono "refresh" con color morado (purple)
+                onPressed: () {
+                  _mostrarConfirmacion(context, "¿Reiniciar juego?", "¿Estás seguro que deseas reiniciar el juego?", () {
+                    _controlesKey.currentState?.reiniciarJuego();
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.exit_to_app, color: Colors.purple), // Icono "exit_to_app" con color morado (purple)
+                onPressed: () {
+                  _mostrarConfirmacion(context, "¿Salir de la aplicación?", "¿Estás seguro que deseas salir de la aplicación?", () {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
