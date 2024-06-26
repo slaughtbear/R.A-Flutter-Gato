@@ -12,16 +12,44 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   @override
-  Widget build(BuildContext context) { // Widget de fondo
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey,
-      body: Center(
-        child: Stack(
-          children: [
-            Image.asset("imagenes/board.png"),
-            Controles()
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Contenido principal
+          Expanded(
+            child: Stack(
+              children: [
+                Image.asset("imagenes/board.png"),
+                Controles(),
+              ],
+            ),
+          ),
+          // Widget de contadores
+          Container(
+            padding: EdgeInsets.all(10.0),
+            color: Colors.black,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  'Victorias X: 0',
+                  style: TextStyle(fontSize: 18.0, color: Colors.blue),
+                ),
+                Text(
+                  'Victorias O: 0',
+                  style: TextStyle(fontSize: 18.0, color: Colors.pink),
+                ),
+                Text(
+                  'Empates: 0',
+                  style: TextStyle(fontSize: 18.0, color: Colors.blueGrey),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
