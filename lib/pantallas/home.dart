@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "El Gato",
+          "E l   G a t o",
           style: TextStyle(
             color: Colors.purple, // Cambia el color del texto del título
           ),
@@ -28,9 +28,13 @@ class _HomeState extends State<Home> {
             color: Colors.black, // Cambia el color de fondo del PopupMenuButton
             onSelected: (value) {
               if (value == "restart") {
-                _controlesKey.currentState?.reiniciarJuego();
+                _mostrarConfirmacion(context, "¿Reiniciar juego?", "¿Estás seguro que deseas reiniciar el juego?", () {
+                  _controlesKey.currentState?.reiniciarJuego();
+                });
               } else if (value == "exit") {
-                Navigator.pop(context);
+                _mostrarConfirmacion(context, "¿Salir de la aplicación?", "¿Estás seguro que deseas salir de la aplicación?", () {
+                  Navigator.pop(context);
+                });
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -87,6 +91,33 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
+    );
+  }
+
+  void _mostrarConfirmacion(BuildContext context, String titulo, String mensaje, Function onConfirm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(titulo),
+          content: Text(mensaje),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Confirmar"),
+              onPressed: () {
+                onConfirm();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
