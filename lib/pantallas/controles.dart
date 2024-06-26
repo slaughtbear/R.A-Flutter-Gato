@@ -144,6 +144,7 @@ class _ControlesState extends State<Controles> {
 
 
 
+
   bool Iguales(int a, int b, int c) {
     if (tablero[a] != estados.vacio) {
       if (tablero[a] == tablero[b] && tablero[b] == tablero[c]) {
