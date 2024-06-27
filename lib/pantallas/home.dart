@@ -20,16 +20,32 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "E l   G a t o",
-          style: TextStyle(
-            color: Colors.purple, // Cambia el color del texto del título
-          ),
+        backgroundColor: Colors.black, // Color de fondo del AppBar
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Image.asset(
+                'imagenes/gato.png', // Ruta de la imagen que deseas utilizar como logo
+                height: 40, // Altura de la imagen
+                width: 40, // Ancho de la imagen
+                fit: BoxFit.contain, // Ajuste de la imagen dentro del contenedor
+              ),
+            ),
+            const Text(
+              "E l   G a t o",
+              style: TextStyle(
+                color: Colors.purple, // Cambia el color del texto del título
+                fontFamily: 'Kanit', // Usa el nombre de la familia de fuentes definida en pubspec.yaml
+                fontSize: 25.0,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ],
         ),
-        backgroundColor: Colors.black, // Cambia el color de fondo de la AppBar
         actions: [
           PopupMenuButton<String>(
-            color: Colors.black, // Cambia el color de fondo del PopupMenuButton
+            color: Colors.black, // Color de fondo del PopupMenuButton
             onSelected: (value) {
               if (value == "restart") {
                 _mostrarConfirmacion(context, "¿Reiniciar juego?", "¿Estás seguro que deseas reiniciar el juego?", () {
@@ -60,6 +76,8 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
+
+
       backgroundColor: Colors.grey,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
